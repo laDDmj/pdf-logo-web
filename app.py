@@ -36,9 +36,8 @@ def insert_logo_into_pdf(pdf_filename, logo_filename):
     doc = fitz.open(pdf_filename)
     page = doc[0]
 
-    # Обрахунок DPI та масштабу
-    dpi = 600
-    zoom = dpi / 72
+    # Масштабування (zoom)
+    zoom = 2  # приблизно 288 DPI
     mat = fitz.Matrix(zoom, zoom)
     pix = page.get_pixmap(matrix=mat, alpha=False)
 
@@ -48,12 +47,12 @@ def insert_logo_into_pdf(pdf_filename, logo_filename):
     # Відкриваємо логотип
     logo = Image.open(logo_filename).convert("RGBA")
 
-    # Позиції логотипа
+    # Позиції логотипа (в пунктах)
     logo_width_pt = 279
     x_offset_pt = 166
     y_offset_pt = 60
 
-    # Обрахунок у пікселях
+    # Обрахунок позицій у пікселях
     logo_width_px = int(logo_width_pt * zoom)
     aspect_ratio = logo.width / logo.height
     logo_height_px = int(logo_width_px / aspect_ratio)
