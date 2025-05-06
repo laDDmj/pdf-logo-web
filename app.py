@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 # Створення каталогу для завантаження файлів
 UPLOAD_FOLDER = 'static/uploads'
-LOGO_PATH = 'static/images/logo.png'  # Логотип в статичній директорії
+LOGO_PATH = os.path.join(app.root_path, 'static', 'images', 'logo.png')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
