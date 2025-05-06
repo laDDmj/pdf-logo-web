@@ -48,8 +48,8 @@ def insert_logo_into_pdf(pdf_filename, logo_filename):
     logo = Image.open(logo_filename).convert("RGBA")
 
     # Позиції логотипа (в пунктах)
-    logo_width_pt = 279
-    x_offset_pt = 166
+    logo_width_pt = 276
+    x_offset_pt = 167
     y_offset_pt = 60
 
     # Обрахунок позицій у пікселях
