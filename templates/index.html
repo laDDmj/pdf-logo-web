@@ -2,61 +2,280 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PDF Logo Replacer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Replacement in PDF</title>
     <style>
+        :root {
+            --primary-color: #00A7E1; /* bright cyan blue from logo */
+            --secondary-color: #002B5C; /* navy blue from logo */
+            --background-color: #f9f9f9;
+            --text-color: #002B5C; /* navy blue from logo */
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --accent-light: #e8f7fc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+        }
+
+        header {
             text-align: center;
-            padding: 50px;
+            margin-bottom: 30px;
         }
 
-        input[type="file"] {
-            margin: 20px 0;
+        .logo {
+            max-width: 300px;
+            margin-bottom: 20px;
         }
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
+        h1 {
+            background: linear-gradient(135deg, var(--primary-color) 20%, var(--secondary-color) 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
         }
 
-        #countdown {
-            font-size: 18px;
-            margin-top: 15px;
-            display: none;
+        .subtitle {
             color: #555;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .upload-container {
+            margin: 30px 0;
+            background: #f5f7fa;
+            border-radius: 8px;
+            padding: 30px;
+            border: 2px dashed #cce5ff;
+            transition: all 0.3s ease;
+        }
+
+        .upload-container:hover {
+            border-color: var(--primary-color);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .file-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .file-input-label {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+            display: block;
+        }
+
+        /* Improved file input styling */
+        .file-input {
+            display: none; /* Hide the actual input */
+        }
+
+        .custom-file-upload {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 167, 225, 0.3);
+            width: 100%;
+            max-width: 250px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .custom-file-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 167, 225, 0.4);
+        }
+
+        .custom-file-upload:active {
+            transform: translateY(1px);
+        }
+
+        .custom-file-upload::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -30px;
+            width: 30px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(20deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .custom-file-upload:hover::before {
+            left: 110%;
+            opacity: 1;
+        }
+
+        .file-name-display {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+            max-width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: block;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 0 4px 15px rgba(0, 167, 225, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 167, 225, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+
+        .instruction {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: var(--accent-light);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 4px;
+        }
+
+        .instruction h3 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .instruction p {
+            font-size: 0.95rem;
+        }
+
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .upload-container {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Replace Logo and Download PDF</h1>
+    <div class="container">
+        <header>
+            <h1>Logo Replacement in PDF</h1>
+            <p class="subtitle">Upload your Versium report to replace the logo</p>
+        </header>
 
-    <form id="uploadForm" method="POST" enctype="multipart/form-data" onsubmit="startCountdown(event)">
-        <input type="file" name="pdf" accept="application/pdf" required>
-        <br><br>
-        <button type="submit">Replace Logo and Download</button>
-    </form>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="upload-container">
+                <div class="file-input-wrapper">
+                    <div class="file-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#00A7E1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <label for="pdf" class="file-input-label">Select your PDF file</label>
+                    <input type="file" id="pdf" name="pdf" accept="application/pdf" required class="file-input">
+                    <label for="pdf" class="custom-file-upload">Choose File</label>
+                    <div class="file-name-display" id="file-name">No file selected</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button type="submit" class="submit-btn">Replace Logo and Download</button>
+            </div>
+        </form>
 
-    <div id="countdown">Download will start in <span id="seconds">3</span> seconds...</div>
+        <div class="instruction">
+            <h3>How it works</h3>
+            <p>Simply upload your PDF report, and the system will automatically replace the logo with a new one. After processing, you'll be able to download the updated document.</p>
+        </div>
+    </div>
+
+    <footer>
+        Logo Replacement
+    </footer>
 
     <script>
-        function startCountdown(event) {
-            event.preventDefault();  // Зупиняє відправлення форми одразу
-
-            const countdownEl = document.getElementById("countdown");
-            const secondsEl = document.getElementById("seconds");
-            let secondsLeft = 3;
-
-            countdownEl.style.display = "block";
-
-            const interval = setInterval(() => {
-                secondsLeft--;
-                secondsEl.textContent = secondsLeft;
-                if (secondsLeft === 0) {
-                    clearInterval(interval);
-                    document.getElementById("uploadForm").submit();  // Надсилає форму
-                }
-            }, 1000);
-        }
+        // Display file name when selected
+        document.getElementById('pdf').addEventListener('change', function() {
+            const fileName = this.files[0] ? this.files[0].name : 'No file selected';
+            document.getElementById('file-name').textContent = fileName;
+        });
     </script>
 </body>
 </html>
