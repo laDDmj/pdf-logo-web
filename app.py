@@ -37,7 +37,7 @@ def insert_logo_into_pdf(pdf_filename, logo_filename):
     page = doc[0]
 
     # Масштабування (zoom)
-    zoom = 0.5  # приблизно 288 DPI
+    zoom = 4  # приблизно 288 DPI
     mat = fitz.Matrix(zoom, zoom)
     pix = page.get_pixmap(matrix=mat, alpha=False)
 
